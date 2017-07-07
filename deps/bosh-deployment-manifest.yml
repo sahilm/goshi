@@ -1,0 +1,99 @@
+---
+name: concourse
+variables:
+  - name: basic_auth_password
+    type: password
+  - name: tls_cert
+    type: certificate
+  - name: tls_key
+    type: rsa
+  - name: db_password
+    type: password
+
+releases:
+- name: concourse
+  version: latest
+- name: garden-runc
+  version: latest
+
+stemcells:
+- alias: trusty
+  os: ubuntu-trusty
+  version: latest
+
+instance_groups:
+- name: web
+  instances: 1
+  vm_type: ((web_vm_type))
+  vm_extensions:
+  - lb
+  stemcell: trusty
+  azs: [z1]
+  networks: [{name: private}]
+  jobs:
+  - name: atc
+    release: concourse
+    properties:
+      external_url: ((external_url))
+      basic_auth_username: ((basic_auth_username))
+      basic_auth_password: ((basic_auth_password))
+      tls_cert: ((tls_cert))
+      tls_key: ((tls_key))
+      tls_bind_port: 443
+      bind_port: 80
+      postgresql_database: &atc_db atc
+      github_auth:
+        authorize:
+          - organization: pivotal-cf
+            teams:
+            - pcf-services-pipeline
+        client_id: ((client_id))
+        client_secret: ((client_secret))
+  - name: tsa
+    release: concourse
+    properties: {}
+
+- name: db
+  instances: 1
+  vm_type: ((db_vm_type))
+  stemcell: trusty
+  persistent_disk_type: ((db_persistent_disk_type))
+  azs: [z1]
+  networks: [{name: private}]
+  jobs:
+  - name: postgresql
+    release: concourse
+    properties:
+      databases:
+      - name: *atc_db
+        role: ((db_username))
+        password: ((db_password))
+
+- name: worker
+  instances: ((worker_instances))
+  vm_type: ((worker_vm_type))
+  vm_extensions:
+  - ((worker_disk_type))
+  stemcell: trusty
+  azs: [z1]
+  networks: [{name: private}]
+  jobs:
+  - name: groundcrew
+    release: concourse
+    properties: {}
+  - name: baggageclaim
+    release: concourse
+    properties: {}
+  - name: garden
+    release: garden-runc
+    properties:
+      garden:
+        listen_network: tcp
+        listen_address: 0.0.0.0:7777
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  serial: false
+  canary_watch_time: 1000-60000
+  update_watch_time: 1000-60000

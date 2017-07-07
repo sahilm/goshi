@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Goshi</title>
+</head>
+<body>
+<svg width="960" height="600"></svg>
+<script src="deps/js-yaml.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="src/data.js"></script>
+<script>
+    var client = new XMLHttpRequest();
+    client.open('GET', '/deps/bosh-deployment-manifest.yml');
+    client.onreadystatechange = function () {
+        var doc = jsyaml.load(client.responseText);
+        console.log(doc);
+    };
+    client.send();
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var svg = d3.select('svg');
+
+    var simulation = d3.forceSimulation()
+        .force('charge', d3.forceManyBody().strength(-10))
+        .force('center', d3.forceCenter(width / 2, height / 2));
+
+    function getNodeColor(node) {
+        return node.level === 1 ? 'red' : 'gray'
+    }
+
+    var nodeElements = svg.append('g')
+        .selectAll('circle')
+        .data(nodes)
+        .enter().append('circle')
+        .attr('r', 3)
+        .attr('fill', getNodeColor);
+
+    var textElements = svg.append('g').selectAll('text')
+        .data(nodes)
+        .enter().append('text')
+        .text(function (node) {
+            return node.label
+        })
+        .attr('font-size', 10)
+        .attr('dx', 10)
+        .attr('dy', 2);
+
+    simulation.nodes(nodes).on("tick", function () {
+        nodeElements.attr("cx", function (node) {
+            return node.x;
+        })
+            .attr("cy", function (node) {
+                return node.y
+            });
+
+        textElements.attr("x", function (text) {
+            return text.x
+        })
+            .attr("y", function (text) {
+                return text.y
+            });
+    })
+</script>
+</body>
+</html>
