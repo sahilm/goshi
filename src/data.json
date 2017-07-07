@@ -32,19 +32,19 @@
     },
     {
       "id": "db",
-      "group": 2,
+      "group": 1,
       "label": "db instance",
       "size": 10
     },
     {
       "id": "atc",
-      "group": 1,
+      "group": 2,
       "label": "atc job",
       "size": 5
     },
     {
       "id": "tsa",
-      "group": 1,
+      "group": 2,
       "label": "tsa job",
       "size": 5
     },
@@ -56,18 +56,44 @@
     },
     {
       "id": "worker",
-      "group": 3,
+      "group": 1,
       "label": "worker instance",
       "size": 10
     },
     {
       "id": "baggageclaim",
-      "group": 3,
+      "group": 2,
       "label": "baggeclaim job",
       "size": 5
+    },
+    {
+      "id": "releases",
+      "group": 3,
+      "label": "releases",
+      "size": 20
+    },
+    {
+      "id": "concourse",
+      "group": 4,
+      "label": "concourse",
+      "size": 10
+    },
+    {
+      "id": "garden runC",
+      "group": 4,
+      "label": "garden runC",
+      "size": 10
     }
   ],
   "links": [
+    {
+      "source": "releases",
+      "target": "concourse"
+    },
+    {
+      "source": "releases",
+      "target": "garden runC"
+    },
     {
       "source": "web",
       "target": "atc",
@@ -79,8 +105,28 @@
       "value": 8
     },
     {
+      "source": "concourse",
+      "target": "tsa",
+      "value": 8
+    },
+    {
+      "source": "concourse",
+      "target": "atc",
+      "value": 8
+    },
+    {
+      "source": "pg",
+      "target": "garden runC",
+      "value": 8
+    },
+    {
       "source": "db",
       "target": "pg",
+      "value": 7
+    },
+    {
+      "source": "baggageclaim",
+      "target": "concourse",
       "value": 7
     },
     {
