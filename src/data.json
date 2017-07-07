@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": "stemcells",
+      "group": 6,
+      "label": "stemcells",
+      "size": 20
+    },
+    {
+      "id": "trusty",
+      "group": 7,
+      "label": "trusty",
+      "size": 10
+    },
+    {
+      "id": "rusty",
+      "group": 7,
+      "label": "rusty",
+      "size": 10
+    },
+    {
+      "id": "instances",
+      "group": 0,
+      "label": "instances",
+      "size": 20
+    },
+    {
+      "id": "web",
+      "group": 1,
+      "label": "web instance",
+      "size": 10
+    },
+    {
+      "id": "db",
+      "group": 2,
+      "label": "db instance",
+      "size": 10
+    },
+    {
+      "id": "atc",
+      "group": 1,
+      "label": "atc job",
+      "size": 5
+    },
+    {
+      "id": "tsa",
+      "group": 1,
+      "label": "tsa job",
+      "size": 5
+    },
+    {
+      "id": "pg",
+      "group": 2,
+      "label": "pg job",
+      "size": 5
+    },
+    {
+      "id": "worker",
+      "group": 3,
+      "label": "worker instance",
+      "size": 10
+    },
+    {
+      "id": "baggageclaim",
+      "group": 3,
+      "label": "baggeclaim job",
+      "size": 5
+    }
+  ],
+  "links": [
+    {
+      "source": "web",
+      "target": "atc",
+      "value": 1
+    },
+    {
+      "source": "web",
+      "target": "tsa",
+      "value": 8
+    },
+    {
+      "source": "db",
+      "target": "pg",
+      "value": 7
+    },
+    {
+      "source": "baggageclaim",
+      "target": "worker",
+      "value": 3
+    },
+    {
+      "source": "instances",
+      "target": "web",
+      "value": 3
+    },
+    {
+      "source": "instances",
+      "target": "db",
+      "value": 3
+    },
+    {
+      "source": "instances",
+      "target": "worker",
+      "value": 3
+    },
+    {
+      "source": "stemcells",
+      "target": "trusty",
+      "value": 3
+    },
+    {
+      "source": "stemcells",
+      "target": "rusty",
+      "value": 3
+    },
+    {
+      "source": "trusty",
+      "target": "web",
+      "value": 3
+    },
+    {
+      "source": "trusty",
+      "target": "db",
+      "value": 3
+    },
+    {
+      "source": "rusty",
+      "target": "worker",
+      "value": 3
+    }
+  ]
+}
